@@ -14,7 +14,7 @@ typedef enum MovingPoint {
     POINT_B,
 } MovingPoint;
 
-#define outsideRectSize 90
+#define outsideRectSize 100
 
 @interface CircleLayer()
 
@@ -117,7 +117,21 @@ typedef enum MovingPoint {
     //语法糖：字典@{}，数组@[]，基本数据类型封装成对象@234，@12.0，@YES,@(234+12.0)
     CGContextSetFillColorWithColor(ctx, [UIColor yellowColor].CGColor);
     CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-    NSArray *points = @[[NSValue valueWithCGPoint:pointA],[NSValue valueWithCGPoint:pointB],[NSValue valueWithCGPoint:pointC],[NSValue valueWithCGPoint:pointD],[NSValue valueWithCGPoint:c1],[NSValue valueWithCGPoint:c2],[NSValue valueWithCGPoint:c3],[NSValue valueWithCGPoint:c4],[NSValue valueWithCGPoint:c5],[NSValue valueWithCGPoint:c6],[NSValue valueWithCGPoint:c7],[NSValue valueWithCGPoint:c8]];
+    NSArray *points =
+    @[
+        [NSValue valueWithCGPoint:pointA],
+        [NSValue valueWithCGPoint:pointB],
+        [NSValue valueWithCGPoint:pointC],
+        [NSValue valueWithCGPoint:pointD],
+        [NSValue valueWithCGPoint:c1],
+        [NSValue valueWithCGPoint:c2],
+        [NSValue valueWithCGPoint:c3],
+        [NSValue valueWithCGPoint:c4],
+        [NSValue valueWithCGPoint:c5],
+        [NSValue valueWithCGPoint:c6],
+        [NSValue valueWithCGPoint:c7],
+        [NSValue valueWithCGPoint:c8]
+    ];
     [self drawPoint:points withContext:ctx];
     
     //连接辅助线
@@ -171,9 +185,12 @@ typedef enum MovingPoint {
     
     self.lastProgress = progress;
     
-    
-    CGFloat origin_x = self.position.x - outsideRectSize/2 + (progress - 0.5)*(self.frame.size.width - outsideRectSize);
-    CGFloat origin_y = self.position.y - outsideRectSize/2;
+    /** 这里是根据以下算法
+          frame.origin.x = position.x - anchorPoint.x * bounds.size.width；
+          frame.origin.y = position.y - anchorPoint.y * bounds.size.height；
+     */
+    CGFloat origin_x = self.position.x - outsideRectSize * self.anchorPoint.x + (progress - 0.5)*(self.frame.size.width - outsideRectSize);
+    CGFloat origin_y = self.position.y - outsideRectSize * self.anchorPoint.y;
     
     self.outsideRect = CGRectMake(origin_x, origin_y, outsideRectSize, outsideRectSize);
 
